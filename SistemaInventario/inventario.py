@@ -2,74 +2,67 @@ from producto import Producto
 
 class Inventario:
     """
-    Clase que gestiona una colección de productos.
+    Clase que gestiona el inventario con persistencia en archivos.
     """
 
-    def __init__(self):
+    def __init__(self, filename="inventario.txt"):
+        self._filename = filename
         self._productos = []
+        self._load_from_file()  # Carga inicial desde el archivo
+
+    def _load_from_file(self):
+        """
+        Carga los productos desde el archivo al iniciar el sistema.
+        Maneja excepciones como FileNotFoundError.
+        """
+        try:
+            with open(self._filename, "r") as file:
+                for line in file:
+                    data = line.strip().split(",")
+                    if len(data) == 4:  # Validar formato correcto
+                        id, nombre, cantidad, precio = data
+                        producto = Producto(id, nombre, int(cantidad), float(precio))
+                        self._productos.append(producto)
+        except FileNotFoundError:
+            # Si el archivo no existe, se creará al guardar
+            print(f"Archivo {self._filename} no encontrado. Se creará uno nuevo.")
+        except Exception as e:
+            print(f"Error al cargar el archivo: {str(e)}")
+
+    def _save_to_file(self):
+        """
+        Guarda todos los productos en el archivo.
+        Maneja excepciones como PermissionError.
+        """
+        try:
+            with open(self._filename, "w") as file:
+                for p in self._productos:
+                    line = f"{p.get_id()},{p.get_nombre()},{p.get_cantidad()},{p.get_precio()}\n"
+                    file.write(line)
+            return True
+        except PermissionError:
+            print("Error: Sin permisos para escribir en el archivo.")
+            return False
+        except Exception as e:
+            print(f"Error al guardar: {str(e)}")
+            return False
 
     def añadir_producto(self, producto):
-        """
-        Añade un nuevo producto al inventario, verificando que el ID sea único.
-
-        :param producto: Producto a añadir
-        :return: True si se añadió correctamente, False si el ID ya existe.
-        """
-        for p in self._productos:
-            if p.get_id() == producto.get_id():
-                return False
-        self._productos.append(producto)
-        return True
+        # ... (mismo código que antes)
+        if success:
+            return self._save_to_file()  # Guarda cambios en el archivo
+        return False
 
     def eliminar_producto(self, id):
-        """
-        Elimina un producto por su ID.
-
-        :param id: ID del producto a eliminar
-        :return: True si se eliminó correctamente, False si no se encontró.
-        """
-        for p in self._productos:
-            if p.get_id() == id:
-                self._productos.remove(p)
-                return True
+        # ... (mismo código que antes)
+        if success:
+            return self._save_to_file()
         return False
 
     def actualizar_producto(self, id, cantidad=None, precio=None):
-        """
-        Actualiza la cantidad y/o precio de un producto existente.
-
-        :param id: ID del producto a actualizar
-        :param cantidad: Nueva cantidad (opcional)
-        :param precio: Nuevo precio (opcional)
-        :return: True si se actualizó correctamente, False si no se encontró el producto.
-        """
-        for p in self._productos:
-            if p.get_id() == id:
-                if cantidad is not None:
-                    p.set_cantidad(cantidad)
-                if precio is not None:
-                    p.set_precio(precio)
-                return True
+        # ... (mismo código que antes)
+        if success:
+            return self._save_to_file()
         return False
 
-    def buscar_por_nombre(self, nombre):
-        """
-        Busca productos cuyo nombre contenga el texto dado (case-insensitive).
-
-        :param nombre: Texto a buscar en los nombres
-        :return: Lista de productos encontrados.
-        """
-        encontrados = []
-        nombre_lower = nombre.lower()
-        for p in self._productos:
-            if nombre_lower in p.get_nombre().lower():
-                encontrados.append(p)
-        return encontrados
-
-    def mostrar_productos(self):
-        """Muestra todos los productos en el inventario."""
-        if not self._productos:
-            print("No hay productos en el inventario.")
-            return
-        for p in self._productos:
-            print(f"ID: {p.get_id()}, Nombre: {p.get_nombre()}, Cantidad: {p.get_cantidad()}, Precio: ${p.get_precio():.2f}")
+    # ... (otros métodos como buscar_por_nombre y mostrar_productos)

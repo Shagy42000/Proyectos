@@ -1,4 +1,3 @@
-from producto import Producto
 from inventario import Inventario
 
 
@@ -33,18 +32,18 @@ def añadir_producto_ui(inventario):
 
     producto = Producto(id, nombre, cantidad, precio)
     if inventario.añadir_producto(producto):
-        print("Producto añadido exitosamente.")
+        print("✅ Producto añadido y guardado exitosamente en el archivo.")
     else:
-        print("Error: Ya existe un producto con ese ID.")
+        print("❌ Error: El ID ya existe o no se pudo guardar en el archivo.")
 
 
 def eliminar_producto_ui(inventario):
     print("\n--- Eliminar Producto ---")
     id = input("Ingrese el ID del producto a eliminar: ").strip()
     if inventario.eliminar_producto(id):
-        print("Producto eliminado exitosamente.")
+        print("✅ Producto eliminado y cambios guardados exitosamente.")
     else:
-        print("Error: No se encontró un producto con ese ID.")
+        print("❌ Error: ID no encontrado o fallo al guardar en el archivo.")
 
 
 def actualizar_producto_ui(inventario):
@@ -85,30 +84,26 @@ def actualizar_producto_ui(inventario):
                 print("El precio debe ser un número decimal. Intente de nuevo.")
 
     if inventario.actualizar_producto(id, cantidad, precio):
-        print("Producto actualizado exitosamente.")
+        print("✅ Producto actualizado y cambios guardados exitosamente.")
     else:
-        print("Error: No se encontró un producto con ese ID.")
+        print("❌ Error: ID no encontrado o fallo al guardar en el archivo.")
 
 
 def buscar_producto_ui(inventario):
     print("\n--- Buscar Producto por Nombre ---")
-    while True:
-        nombre = input("Ingrese el nombre o parte del nombre a buscar: ").strip()
-        if nombre:
-            break
-        print("Error: El campo de búsqueda no puede estar vacío.")
+    nombre = input("Ingrese el nombre o parte del nombre a buscar: ").strip()
     encontrados = inventario.buscar_por_nombre(nombre)
     if encontrados:
-        print("\nProductos encontrados:")
+        print("\n🔍 Productos encontrados:")
         for p in encontrados:
             print(
                 f"ID: {p.get_id()}, Nombre: {p.get_nombre()}, Cantidad: {p.get_cantidad()}, Precio: ${p.get_precio():.2f}")
     else:
-        print("No se encontraron productos con ese nombre.")
+        print("❌ No se encontraron productos con ese nombre.")
 
 
 def main():
-    inventario = Inventario()
+    inventario = Inventario()  # Carga automáticamente el archivo al iniciar
     while True:
         print("\n=== Sistema de Gestión de Inventario ===")
         print("1. Añadir Producto")
@@ -135,7 +130,7 @@ def main():
             print("Saliendo del sistema...")
             break
         else:
-            print("Opción no válida. Intente de nuevo.")
+            print("❌ Opción no válida. Intente de nuevo.")
 
 
 if __name__ == "__main__":
